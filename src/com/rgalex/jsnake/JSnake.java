@@ -36,6 +36,7 @@ public class JSnake extends GameLoop{
 
     //Snake properties
     private LinkedList<Point> snake;
+    private LinkedList<Point> newSnake;
     private JSnake.Direction direction;
     private long speed;
     private long speedAcc;
@@ -95,7 +96,7 @@ public class JSnake extends GameLoop{
     }
 
     public void move(){
-        LinkedList<Point> newSnake = new LinkedList<Point>();
+        this.newSnake.clear();
         Point last = null;
         for(Point p : this.snake){
             newSnake.addLast(p.translate(last == null ? this.direction.vector : last.sub(p)));
@@ -109,7 +110,9 @@ public class JSnake extends GameLoop{
             newSnake.addLast(this.snake.getLast());
         }
 
+        LinkedList<Point> oldSnake = this.snake;
         this.snake = newSnake;
+        this.newSnake = oldSnake;
 
         this.sendEvent(JSnake.EV_STEP);
     }
@@ -120,7 +123,7 @@ public class JSnake extends GameLoop{
 
         //Move snake once speed is reached
         this.speedAcc += delta;
-        if(this.speedAcc >= this.speed){
+        while(this.speedAcc >= this.speed){
             this.move();
             this.speedAcc -= this.speed;
         }
@@ -138,6 +141,8 @@ public class JSnake extends GameLoop{
         this.snake = new LinkedList<Point>();
         this.snake.add(head);
         this.snake.add(body);
+
+        this.newSnake = new LinkedList<Point>();
 
         this.logStatus();
     }

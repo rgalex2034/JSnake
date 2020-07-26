@@ -17,8 +17,9 @@ public abstract class GameLoop extends TimerTask{
 
     @Override
     public void run(){
-        long now   = System.currentTimeMillis();
+        long now   = System.nanoTime();
         long delta = this.last == 0 ? 0 : now - this.last;
+        delta /= 1000000;//Convert to ms
 
         this.loop(delta);
 
